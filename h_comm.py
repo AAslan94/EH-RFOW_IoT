@@ -12,7 +12,6 @@ from rf import *
 from libow8 import *
 import matplotlib.pyplot as plt
 from mac_sim import *
-import pickle
 from defaults import constants
 from scipy.spatial.distance import pdist, squareform
 
@@ -57,12 +56,13 @@ class Hybrid_WSN:
         self.r_master = self.l.r_master
         self.ber_downlink = ut.Qfunction(self.l.g_s_tot)
         self.sensitivity = self.l.sensitivity
+        self.Tperiod = self.l.Tcycle
         #self.d = np.sqrt(np.sum((self.r_sensor - self.r_master)**2,axis=1))
         self.d = self.calc_max_dist()
         self.sensitivity = calc_new_sensitivity(self.sensitivity,self.L_uplink[0]/8,0.01) #calculate sensitivity for given packet size (in bytes) and target PER
         self.TX_min = calc_TX_power(self.d,self.sensitivity,'') #min rf tx required power
         self.TX,self.Itx = min_tx_power_level(self.TX_min)
-        #self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = self.calc_time_mac()
+        #self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = self.calc_time_mac(self.N,bytes_to_slots(self.L_uplink[0]/8),self.Tperiod,2000)
         self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = bo_time,cca,cpu_on,ack_all,tx_all
         self.Iact = self.l.Iact
         self.IWU = self.l.IWU
@@ -72,7 +72,6 @@ class Hybrid_WSN:
         self.Vsensor = self.l.Vsensor
         self.Isensor = self.l.Isensor
         self.Itia = self.l.Itia
-        self.Tperiod = self.l.Tcycle
         self.Icca = self.l.Icca
         self.ISL = self.l.ISL
         self.I = None #to plot power cycle
@@ -137,6 +136,7 @@ class Hybrid_WSN:
         self.T = np.append(self.T,t)
         Isn = np.sum(self.Isensor)
         ps = Isam * Tsam * Vmcu + Isn * Tsam * Vsn
+        p = np.append(p,ps)
         CPU_cycles = 5000 #assume
         CPU_f = 48*1e6
         Tproc = CPU_cycles/CPU_f
@@ -163,6 +163,7 @@ class Hybrid_WSN:
         self.T = np.append(self.T,t)
         Tack = self.t_ack[0]
         Iack = self.Iadc + self.Iact + self.Itia
+        #Iack = Icca
         ps = Tack * Iack * Vmcu
         p = np.append(p,ps)
         t += Tack
