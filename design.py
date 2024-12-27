@@ -13,11 +13,12 @@ import owutils as ut
 diag = diagonal_points(0,10,0,10,0)
 arr = gen_points(1,9,1,9,3,5,5,True) 
 arr2 = gen_points(2,12,2,12,3,5,5,False) 
-arr3 = gen_points(0.3,9.7,0.3,9.7,0,50,50,False)
+arr3 = gen_points(0.3,9.7,0.3,9.7,0,7,7,False)
 #opt solar orientation vector
-op = np.load('op_l_sun_2500.npy')
+op = np.load('op_l_sun.npy')
 nor = ut.spher_to_cart_ar(1, op[:,0], op[:,1]).T
-
+op = np.load('op_l_nsun.npy')
+nor_n = ut.spher_to_cart_ar(1, op[:,0], op[:,1]).T
 
 design = {
     'test':{
@@ -33,8 +34,8 @@ design = {
         'refl_ceiling' : 0.6,
         'refl_floor' : 0.3,
         #ambient sources - window variables
-        'amb_L1': 2, #dimension 1 window
-        'amb_L2': 2, #dimension 2 window
+        'amb_L1': 2,
+        'amb_L2': 2,
         #communication variables
         #sensor variables
         'r_sensor':arr3, #position of sensors
@@ -70,7 +71,7 @@ design = {
         'r_leds': arr, #position of the lighting LEDs
         'PT_leds': 6, #Optical transmitted power from the lighting leds
         #Solar panel variables
-        'nR_solar': nor, #orientation (normal vector) of the solar cell
+        'nR_solar': nor,
         'nS_leds': -constants.ez, #orientation (normal vector) of the lighting leds         
         'A_solar': 5.2 * 5.2 * 1e-4, #Active area of the solar cell [m^2]    
         'Isc':0.165, #Short-circuit current of PV panel in Amperes

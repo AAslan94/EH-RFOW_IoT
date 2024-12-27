@@ -62,8 +62,8 @@ class Hybrid_WSN:
         self.sensitivity = calc_new_sensitivity(self.sensitivity,self.L_uplink[0]/8,0.01) #calculate sensitivity for given packet size (in bytes) and target PER
         self.TX_min = calc_TX_power(self.d,self.sensitivity,'') #min rf tx required power
         self.TX,self.Itx = min_tx_power_level(self.TX_min)
-        #self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = self.calc_time_mac(self.N,bytes_to_slots(self.L_uplink[0]/8),self.Tperiod,2000)
-        self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = bo_time,cca,cpu_on,ack_all,tx_all
+        self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = self.calc_times_mac(5000)
+        #self.t_backoff,self.t_cca,self.t_act,self.t_ack,self.t_tx = bo_time,cca,cpu_on,ack_all,tx_all
         self.Iact = self.l.Iact
         self.IWU = self.l.IWU
         self.tWU = self.l.tWU
@@ -98,26 +98,16 @@ class Hybrid_WSN:
     def calc_times_mac(self, it = 5000):
             bits_per_symbol = 4
             L = (bytes_to_slots(self.L_uplink/8))
-            print(f'L is {L[0]}')
-            [thr,col,tx,bo,cca] = sim_avg(n = self.N, packet = int(L[0]), it = it)
+            [thr,col,tx,bo,cca] = sim_avg(n = self.N, packet = int(L[0]), t=self.Tperiod, it = it)
             t_symbol = (1/self.Rb_uplink) * bits_per_symbol
-            print(f't_symbol is {t_symbol}')
             t_slot = 20 * t_symbol
-            print(f'{t_slot} is tslot')
             bo_time = bo * t_slot
-            print(f'{bo_time} is bo')
             cca_time = cca* t_slot * (6/20) #cca duration (6 symbols) - (14 symbols cpu on)
-            print(f'{cca_time} is ccatime')
             cpu_on_time = cca * t_slot * (14/20) + bo_time + (col/self.N)* t_slot*(12/20) + (tx/self.N)*t_slot*(12/20) #backoff periods + turnaround_time (for succesfull and unsuccessful)
-            print(f'{cpu_on_time} is cpu_on')
             wack_time = (col/self.N)*54*t_symbol #due to collisions
-            print(f'{wack_time} is twack')
             ack_time = (tx/self.N)*(8*t_symbol + 10*t_symbol)  #successful 10t-symbol average delay
-            print(f'{ack_time} is acktime')
             ack_all_time =  wack_time + ack_time
-            print(f'{ack_all_time} is ackalltime')
             tx_all = (col/self.N) * t_slot * L + (tx/self.N)*t_slot*L
-            print(f'{tx_all} is tx_all')
             np.savez("time_data.npz", bo_time=bo_time, cca_time=cca_time, cpu_on_time=cpu_on_time, ack_all_time=ack_all_time, tx_all=tx_all)
             return [bo_time,cca_time,cpu_on_time,ack_all_time,tx_all]
 

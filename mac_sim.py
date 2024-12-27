@@ -8,9 +8,9 @@ Created on Thursday 31 Oct 16:09:12 2024
 
 import numpy as np
 import matplotlib.pyplot as plt
-def simulate(N,packet):
+def simulate(N,packet,t):
   #all nodes should wake up in the first p timeslots
-  p = 3000
+  p = t/0.00032 - 125 #duty cycle in timeslot (substract some)
   sleep_state = np.random.randint(0,p,N)
   #print(sleep_state)
   s = np.min(sleep_state)
@@ -43,16 +43,13 @@ def simulate(N,packet):
 
   while np.any(delay > -10): #while there are still nodes with packets
      #assign delay = -9 to nodes who are still sleeping
-      #print(f"sleep state is {sleep_state}")
       delay_n = np.where(sleep_state!=0,-9,delay_n)
       delay = delay_n
       op = np.where((waitAck>0) & (delay>-10))
       waitAck[op] -=1
       inx = np.where((delay != -100) & (delay != -200))
-      #print(f'{np.all(delay[inx])} delay inx')
       if np.all(delay[inx] == -9) :
           id += 1 
-          #print("idle timeslot")
       if (np.any(waitAck[op]==0)):
         #resetCounters
         delay_n[op] = np.random.randint(0, 2**aMinBE, op[0].size)  # Delay value
@@ -61,11 +58,6 @@ def simulate(N,packet):
         if channel_busy==0:
           h = np.where(delay==-3)
           waitAck[h] = MaxAckWait
-      #print(f"Currently simulating slot {k}:")
-      #check to see if any node is ready for CCA
-      #print(f"Channel is Busy for {channel_busy} more time-slots")
-      #print(f"Backoff Counter at the start of {k} slot is {delay}")
-     # print("Wait Ack" + str(waitAck))
       bo = np.where(delay>-1) #nodes either in backoff or cca
       nbBackoff[bo]+=1
       delay_n[bo] = delay_n[bo] -1 #decrement counter
@@ -81,7 +73,6 @@ def simulate(N,packet):
           nbCol[arg_cca] +=1
           #update RT
           RT[arg_cca] +=1
-          #print("RT IS " + str(RT))
           NB[arg_cca] = 0 #reset
           ux = np.where((RT>RT_max) & (delay>-50))
           delay_n[ux] = -200 #failed due to reaching the max levels of retries
@@ -92,7 +83,6 @@ def simulate(N,packet):
           delay_n[arg_cca] = -100 #succesfull transmission
           #check to see if that is the last node
           mask = np.arange(delay.shape[0]) != arg_cca
-          #print(f'mask is {mask}')
           if np.all(delay[mask.flatten()] < -10):
             k += packet  #and one timeslot is added to the end of the algorithm
       else:
@@ -105,14 +95,9 @@ def simulate(N,packet):
         f = np.where(NB>macMaxCSMABackoffs)
         delay_n[f] = -200 #failed to transmit due to reaching max value of BackOffs
       s_wu = np.where(sleep_state == 1)
-      #print(f"s_wu is {s_wu} and s_wu size is {s_wu[0].size} ")
-     # print(f"delay n[wu]  shape is {delay_n[s_wu[0]].shape}")
-      #print(delay_n)
       delay_n[s_wu] = np.random.randint(0,2**aMinBE,s_wu[0].size)
       sleep_state = np.where(sleep_state != 0, sleep_state - 1, sleep_state)
       k += 1
-     # print("NB status is " + str(NB))
-     # print("k is " + str(k))
   transmissions = (delay == -100).sum()
   throughput = np.sum(transmissions*packet)/(k-1-id)
   col = (nbCol == 1).sum()
@@ -121,14 +106,14 @@ def simulate(N,packet):
   return np.array([throughput,col,transmissions,bo_mean,cca_mean])
 
 
-def sim_avg(n=20,packet=2,it=2000):
+def sim_avg(n=20,packet=2,t=1,it=2000):
     thr_h = np.zeros((it,))
     col_h = np.zeros((it,))
     tx_h = np.zeros((it,))
     bo_h = np.zeros((it,))
     cca_h = np.zeros((it,))
     for j in range(0,it):
-        var = simulate(n,packet)
+        var = simulate(n,packet,t)
         thr_h[j] = var[0]
         col_h[j] = var[1]
         tx_h[j] = var[2]
@@ -139,8 +124,6 @@ def sim_avg(n=20,packet=2,it=2000):
     tx = np.mean(tx_h)
     bo = np.mean(bo_h)
     cca = np.mean(cca_h)
-    print(thr,col,tx,bo,cca)
+    
     return [thr,col,tx,bo,cca]
 
-#var = sim_avg()
-#print(var)
