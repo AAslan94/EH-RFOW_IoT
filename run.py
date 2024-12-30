@@ -13,7 +13,9 @@ from design import design
 
 
 #Run network simulation 
+print("starting hybrid network simulation - MAC simulation may take some time")
 network = Hybrid_WSN()
+print("ending hybrid network simulation")
 #Run energy harvesting simulation 
 eh = EH()
 
@@ -35,6 +37,7 @@ plt.colorbar(label='SNR [dB]')
 plt.xlabel('Length [m]')
 plt.ylabel('Width [m]')
 plt.title('SNR - with ambient sunlight')
+plt.ion()
 plt.show()
 
 
@@ -48,7 +51,9 @@ plt.colorbar(label='SNR [dB]')
 plt.xlabel('Length [m]')
 plt.ylabel('Width [m]')
 plt.title('Diffuse SNR - with ambient sunlight')
+plt.ion()
 plt.show()
+
 
 
 # -----------------------------
@@ -62,6 +67,7 @@ plt.colorbar(label="Battery Life Estimate [days]")
 plt.title(f"Battery life estimate - T = {network.Tperiod[0]} s")
 plt.xlabel("Length [m]")
 plt.ylabel("Width [m]")
+plt.ion()
 plt.show()
 
 # -----------------------------
@@ -75,5 +81,10 @@ colorbar = plt.colorbar(label='Energy harvested per hour [J]', ticks=np.arange(2
 plt.xlabel("Length [m]")
 plt.ylabel("Width [m]")
 plt.title('Energy harvested per hour with sunlight')
+plt.ion()
 plt.show()
 
+while True:
+    user_input = input("Type 'exit' to close the program: ")
+    if user_input.lower() == 'exit':
+        break

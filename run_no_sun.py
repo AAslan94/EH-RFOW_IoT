@@ -64,6 +64,7 @@ plt.colorbar(label='SNR [dB]')
 plt.xlabel('Length [m]')
 plt.ylabel('Width [m]')
 plt.title('SNR - without ambient sunlight')
+plt.ion()
 plt.show()
 
 
@@ -77,6 +78,7 @@ plt.colorbar(label='SNR [dB]')
 plt.xlabel('Length [m]')
 plt.ylabel('Width [m]')
 plt.title('Diffuse SNR - without ambient sunlight')
+plt.ion()
 plt.show()
 
 
@@ -91,6 +93,7 @@ colorbar = plt.colorbar(label='Energy harvested per hour [J]')
 plt.xlabel("Length [m]")
 plt.ylabel("Width [m]")
 plt.title('Energy harvested per hour without sunlight')
+plt.ion()
 plt.show()
 
 # -----------------------------
@@ -104,6 +107,7 @@ colorbar = plt.colorbar(label='Power per cm$^2$ [μW]')
 plt.xlabel("Length [m]")
 plt.ylabel("Width [m]")
 plt.title('Harvested power per cm$^2$ [μW] when there is no sunlight')
+plt.ion()
 plt.show()
 
 # -----------------------------
@@ -119,6 +123,7 @@ plt.colorbar(label='Active area of the PV $[cm^2]$')
 plt.xlabel("Length [m]")
 plt.ylabel("Width [m]")
 plt.title('Minimum PV active area [cm$^2$]')
+plt.ion()
 plt.show()
 
 shutil.copyfile(backup_file, original_file)
@@ -126,6 +131,9 @@ os.remove(backup_file)
 print("Reverted to the original design.")
 
 
-
+while True:
+    user_input = input("Type 'exit' to close the program: ")
+    if user_input.lower() == 'exit':
+        break
 
 
