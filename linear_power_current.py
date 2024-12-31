@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#linear fit -  power = a*current + b
+#linear fit -  current = a*power + b
 p_min = -20 #dB
 p_max = 5 #dB
 i_min = 4 #mA
