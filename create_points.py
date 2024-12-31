@@ -23,8 +23,8 @@ def gen_points(x_start,x_end,y_start,y_end,z_height, num_points_x, num_points_y,
         plt.gca().set_aspect('equal', adjustable='box')
         plt.xlim([0,10])
         plt.ylim([0,10])
-        #plt.legend(loc='upper right')
-        #plt.show()        
+        plt.legend(loc='upper right')
+        plt.show()        
     return ceiling_points
 
 def diagonal_points(x_start,x_fin,y_start,y_fin,height, N = 20):

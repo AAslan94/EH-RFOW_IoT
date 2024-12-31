@@ -11,7 +11,7 @@ from create_points import *
 import owutils as ut
 
 diag = diagonal_points(0,10,0,10,0)
-arr = gen_points(1,9,1,9,3,5,5,True) 
+arr = gen_points(1,9,1,9,3,5,5,False) 
 arr2 = gen_points(2,12,2,12,3,5,5,False) 
 arr3 = gen_points(0.3,9.7,0.3,9.7,0,7,7,False)
 #opt solar orientation vector
