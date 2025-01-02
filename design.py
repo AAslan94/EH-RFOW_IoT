@@ -66,7 +66,8 @@ design = {
         'Itia':0.7e-3, #Transimpendance amplifier quiscent current 
         'Icca':6.4e-3, #Current consumption when node performs CCA
         'Tcycle':1, #duty cycle in seconds
-        #Lighting variables
+        'Vcharge':4.2 , #Charging battery voltage in Volts
+         #Lighting variables
         'm_leds': 1, #Lambertian order of the lighting LEDs
         'r_leds': arr, #position of the lighting LEDs
         'PT_leds': 6, #Optical transmitted power from the lighting leds

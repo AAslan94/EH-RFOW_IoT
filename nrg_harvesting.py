@@ -20,11 +20,11 @@ def sim_light_solar(design,sp_params,opt_orientation):
     params_d = designs[design] 
     params_d['nR_sensor'] = opt_orientation
     params_d['A_sensor'] =  sp_params['Area']
-    params_d['no_bounces'] = 4
+    #params_d['no_bounces'] = 4
     l = sensor_net(**params_d) 
     l.calch()
     l.light_sim()
-    return l
+    return l,params_d['Vcharge']
 
 
 
@@ -44,7 +44,8 @@ panel = {
 class EH():
     def __init__(self,design = 'e',sp_params = panel,opt_orientation= d['nR_solar']):
         self.s = sp_params
-        self.l = sim_light_solar(design,self.s,opt_orientation)
+        x = sim_light_solar(design,self.s,opt_orientation)
+        self.l = x[0]
         self.p_all = np.sum(np.sum(self.l.Pin_sm_diff,axis = 0),axis = 1) + np.sum(self.l.Pin_sm,axis = 0) + self.l.Pin_sa #LOS + Diffuse + Ambient
         self.p_no_sun = np.sum(np.sum(self.l.Pin_sm_diff,axis = 0),axis = 1) + np.sum(self.l.Pin_sm,axis = 0)
         self.p_los = np.sum(self.l.Pin_sm,axis = 0)
@@ -73,7 +74,7 @@ class EH():
         self.calc_params_sun() #extract params for cells in every position
         self.calc_params_no_sun()
         self.buck_boost_eff() #efficiency of buck-boost (spv1050)
-        self.Vbatt = 4.2 #charging voltage of battery
+        self.Vbatt = x[1] #charging voltage of battery
         self.iext_sun = self.pext_sun/self.Vbatt 
         self.iext_no_sun = self.pext_no_sun/self.Vbatt
         self.cap_current() #charging circuit cannot provide more that 70mA

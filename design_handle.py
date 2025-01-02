@@ -83,6 +83,7 @@ designs = {
     'PT_master' : d['PT_leds'], 
     'A_master' : 1e-4, #irrelevant
     'A_sensor' : d['A_solar'],
+    'Vcharge': d['Vcharge'],
      "SOLAR": True
       }     
 }
