@@ -191,7 +191,6 @@ class SolarPanel:
   
   def get_solar_parameters(self, Gcorrection = False):
     if self.method == 'Brano':
-      #print('They be')
       i = get_solar_parameters_stc_brano(self.i_exp,self.v_exp)
     else:
       i = get_solar_parameters_stc(self.Isc,self.Voc,self.Imp,self.Vmp,self.N)
