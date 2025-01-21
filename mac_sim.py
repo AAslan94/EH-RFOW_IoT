@@ -5,14 +5,14 @@ Created on Thursday 31 Oct 16:09:12 2024
 
 @author: alx
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 #t - duty cycle in seconds
 #packet - packet length in timeslots (1 timeslot -> 10 bytes)
-def simulate(N,packet=2,t=0.01):
+def simulate(N,packet=2,t=1):
   #all nodes should wake up in the first p timeslots
   p = t/0.00032 - 125 #duty cycle in timeslot (substract some to ensure every node will be done by the end of the period)
+  #p = 15
   sleep_state = np.random.randint(0,p,N)
   s = np.min(sleep_state)
   sleep_state = sleep_state - s #no need to wait for the first node to wake up
@@ -46,7 +46,7 @@ def simulate(N,packet=2,t=0.01):
   id = 0 #count timeslots in which no node is active (to substract them at the end)
 
   while np.any(delay > -10): #while there are still nodes with packets
- 
+
       #assign delay = -9 to nodes who are still sleeping
       delay_n = np.where(sleep_state!=0,-9,delay_n)
       #dealy array indicates the status of nodes
@@ -57,11 +57,16 @@ def simulate(N,packet=2,t=0.01):
       waitAck[op] -=1 #update time to wait for ack
       inx = np.where((delay != -100) & (delay != -200)) #find nodes that have not reached success or failure states
       #print(f'nodes still in the game are {inx}')
+      #print('delay at the start of the timeslot is' + str(delay_n))  
+     
       if np.all(delay[inx] == -9) :
           if channel_busy == 0:
+              sl = np.min(sleep_state[inx])
+              sleep_state[inx] = sleep_state[inx] - sl + 1
+              #print(f'skipping {sl} timeslots')
               #all nodes in interest are still sleeping and no on-going transmission
               id += 1 
-              print("idle timeslot")
+              #print("idle timeslot")
       if (np.any(waitAck[op]==0)):
         #resetCounters --caution
         #print("colliding nodes back in the game this timeslot")
@@ -99,7 +104,7 @@ def simulate(N,packet=2,t=0.01):
           #check to see if that is the last node
           mask = np.arange(delay.shape[0]) != arg_cca
           if np.all(delay[mask.flatten()] < -10):
-            k += packet  #and one timeslot is added to the end of the algorithm
+            k += packet + ACK  #and one timeslot is added to the end of the algorithm
       else:
         NB[arg_cca] +=1
         if arg_cca[0].size>0:  # This checks if arg_cca is not empty
@@ -119,9 +124,11 @@ def simulate(N,packet=2,t=0.01):
       
       #print("delay is at the end of the timeslot " + str(delay_n))
       #print(f"end of {k}th timeslot simulation")
+      #print("................ ")
+      #print("................ ")  
 
   transmissions = (delay == -100).sum()
-  throughput = np.sum(transmissions*packet)/(k-1-id)
+  throughput = np.sum(transmissions*packet)/(k-id)
   col = (nbCol == 1).sum()
   bo_mean = np.mean(nbBackoff)
   cca_mean = np.mean(nbCCA)
@@ -130,7 +137,9 @@ def simulate(N,packet=2,t=0.01):
   #print("*******")
   #print(f"total timeslots are {k}")
   #print('*********')
-  #print(f'idle timeslots are {id}')  
+  #print(f'idle timeslots are {id}')
+  #print("................ ")
+  #print("................ ")  
   return np.array([throughput,col,transmissions,bo_mean,cca_mean])
 
 

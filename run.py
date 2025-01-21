@@ -10,6 +10,13 @@ from h_comm import *
 from nrg_harvesting import *
 from design import design
 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": ["Palatino"],
+    "font.size" : 14,
+    "lines.linewidth" : 2,
+})
 
 
 #Run network simulation 
