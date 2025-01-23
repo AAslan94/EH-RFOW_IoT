@@ -6,9 +6,11 @@ For the EH, the PV panels are modelled with the five-parameters equivalent circu
 The library is partially based on the PYOWIOT library [1].
 
 **HOW TO USE IT**
+
 See **Hybrid_EH_IoT_quick_start_guide.pdf** for a detailed quick start guide.
 
 **Funding**
+
 This code was written as part of the work for **[OWIN6G MSCA](https://owin6g.eu)** , supported by the **European Union**
 
 **More documentation is on the way**
