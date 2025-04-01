@@ -1,4 +1,4 @@
-# EH-OWRF_IoT
+# EH-RFOW_IoT
 Open-source Python 3 library for simulating a hybrid VLC(downlink)/RF(uplink) indoor WSN for IoT with Energy Harvesting (EH) capabilities. 
 The communication model includes simulation of PHY and MAC (Unslotted CSMA-CA) layers. 
 VLC employes ON-OFF Keying modulation taking into account both LOS & Diffuse contributions, where the RF uplink is based on 802.15.4 @2.4GHz. Duty-cycling is also assumed and the period can be set accordingly.
