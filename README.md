@@ -17,7 +17,3 @@ This code was written as part of the work for **[OWIN6G MSCA](https://owin6g.eu)
 
 
 [1] https://github.com/thomaskamalakis/pyowiot
-
-[2] V. Stornelli, M. Muttillo, T. de Rubeis, and I. Nardi, “A new simplified five-parameter estimation
-method for single-diode model of photovoltaic panels,” Energies, vol. 12, no. 22, 2019.
-
